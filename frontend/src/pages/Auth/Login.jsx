@@ -32,13 +32,13 @@ const Login = () => {
     e.preventDefault()
     
     try {
-      const res = await login({email, password})
+      const res = await login({email, password}).unwrap()
       if (res.error) {
         throw new Error(res.error.data?.message || "Login failed");
       }
       console.log(res);
       dispatch(setCredentials({...res}))
-      
+      navigate(redirect);
       
     } catch (error) {
       console.log('Login Error:', error);
@@ -71,7 +71,7 @@ const Login = () => {
               />
             </div>
 
-            <div className="my-[2rem]">
+            <div className="mb-4">
               <label
                 htmlFor="password"
                 className="block text-sm font-medium text-white"
@@ -111,6 +111,11 @@ const Login = () => {
             </p>
           </div>
         </div>
+        <img
+          src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1964&q=80"
+          alt=""
+          className="h-[65rem] w-[59%] xl:block md:hidden sm:hidden rounded-lg"
+        />
       </section>
     </div>
   );
