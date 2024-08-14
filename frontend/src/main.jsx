@@ -34,6 +34,7 @@ const router = createBrowserRouter(
   )
 )
 
+//Provider which makes the Redux store available to the rest of your app
 ReactDOM.createRoot(document.getElementById('root')).render(
   <Provider store = {store}>
 

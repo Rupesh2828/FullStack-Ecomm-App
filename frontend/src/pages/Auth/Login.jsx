@@ -7,14 +7,19 @@ import { toast } from "react-toastify";
 import { useLoginMutation } from "../../redux/apis/usersApiSlice";
 import Loader from "../../components/Loader";
 
+//for connecting react to redux we use useSelector() coontains the reducer --> check store.js
+
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  //dispatch connects the Login component with store
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [login, { isLoading }] = useLoginMutation();
+
+  //took userInfo from authSlice for making changes in that
   const { userInfo } = useSelector((state) => state.auth);
 
   const { search } = useLocation();
@@ -37,6 +42,7 @@ const Login = () => {
         throw new Error(res.error.data?.message || "Login failed");
       }
       console.log(res);
+      //this sets all the information about users in local storage of your page, even you refersh the app its still has the info and logged in user.
       dispatch(setCredentials({...res}))
       navigate(redirect);
       

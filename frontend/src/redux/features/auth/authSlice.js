@@ -27,6 +27,8 @@ const authSlice = createSlice({
   }
 });
 
+//by exporting the actions of reducers we can directly use in react components
 export const {setCredentials, logout} = authSlice.actions;
 
+//gets access to reducer
 export default authSlice.reducer;
