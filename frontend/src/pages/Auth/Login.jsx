@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { useLoginMutation } from "../../redux/apis/usersApiSlice";
 import Loader from "../../components/Loader";
 
-//for connecting react to redux we use useSelector() coontains the reducer --> check store.js
+//for connecting react to redux we use useSelector() contains the reducer --> check store.js
 
 const Login = () => {
   const [email, setEmail] = useState("");
