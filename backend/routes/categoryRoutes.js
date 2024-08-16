@@ -5,7 +5,8 @@ import { createCategory, updateCategory, deleteCategory, listCategory, getCatego
 
 import {authenticate, authorizeAdmin} from "../middlewares/authMiddleware.js"
 
-router.route("/").post(authenticate,authorizeAdmin,createCategory).get(listCategory)
+router.route("/").post(authenticate,authorizeAdmin,createCategory)
+router.route("/categories").get(listCategory)
 router.route("/:categoryId").put(authenticate,authorizeAdmin, updateCategory )
 router.route("/:categoryId").delete(authenticate,authorizeAdmin,deleteCategory)
 router.route("/:id").get(getCategoryById)

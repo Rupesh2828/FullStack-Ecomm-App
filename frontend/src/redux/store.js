@@ -4,7 +4,6 @@ import { apiSlice } from "./apis/apiSlice";
 import authReducer from "./features/auth/authSlice";
 
 
-
 const store = configureStore({
     reducer : {
         [apiSlice.reducerPath] : apiSlice.reducer,

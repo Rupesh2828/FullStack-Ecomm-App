@@ -64,7 +64,7 @@ const updateCategory = asyncHandler(async(req, res) => {
         
       } catch (error) {
         console.log(error);
-        return res.status(500).json("Internal server error")
+        return res.status(500).json("Internal server error1")
       }
 })
 
@@ -111,7 +111,7 @@ const getCategoryById = asyncHandler(async(req, res) => {
         
     } catch (error) {
         console.log();
-        return res.status(500).json("Internal server error ")
+        return res.status(500).json("Internal server error 1 ")
         
     }
 })
