@@ -1,87 +1,113 @@
-import { useState } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router-dom";
 import {
-  useCreateProductMutation,
+  useUpdateProductMutation,
+  useDeleteProductMutation,
+  useGetProductByIdQuery,
   useUploadProductImageMutation,
 } from "../../redux/apis/productApiSlice";
 import { useFetchCategoryQuery } from "../../redux/apis/categoryApiSlice";
 import { toast } from "react-toastify";
 import AdminMenu from "./AdminMenu";
+import { useEffect, useState } from "react";
 
-const ProductList = () => {
-  const [image, setImage] = useState("");
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [price, setPrice] = useState("");
-  const [category, setCategory] = useState("");
-  const [quantity, setQuantity] = useState("");
-  const [brand, setBrand] = useState("");
-  const [stock, setStock] = useState(0);
-  const [imageUrl, setImageUrl] = useState(null);
+const ProductUpdate = () => {
+  const params = useParams();
+
+  const { data: formdata } = useGetProductByIdQuery(params._id);
+
+  //formdata?.image this means if we already have existing image, if we dont make the empty string
+  const [image, setImage] = useState(formdata?.image || "");
+  const [name, setName] = useState(formdata?.name || "");
+  const [description, setDescription] = useState(formdata?.description || "");
+  const [price, setPrice] = useState(formdata?.price || "");
+  const [quantity, setQuantity] = useState(formdata?.quantity || "");
+  const [category, setCategory] = useState(formdata?.category || "");
+  const [brand, setBrand] = useState(formdata?.brand || "");
+  const [stock, setStock] = useState(formdata?.countInStock || "");
 
   const navigate = useNavigate();
 
-  const [uploadProductImage] = useUploadProductImageMutation();
-  const [createProduct] = useCreateProductMutation();
-  const { data: categories } = useFetchCategoryQuery();
+  const { data: categories = [] } = useFetchCategoryQuery();
+  const [uploadProductImage] = useUploadProductImageMutation(); //Check here once
+  const [updateProduct] = useUpdateProductMutation();
+  const [deleteProduct] = useDeleteProductMutation();
+
+  useEffect(() => {
+    if (formdata && formdata._id) {
+      setName(formdata.name);
+      setDescription(formdata.description);
+      setPrice(formdata.price);
+      setQuantity(formdata.quantity);
+      setCategory(formdata.categories?._id);
+      setBrand(formdata.brand);
+      setImage(formdata.image);
+    }
+  }, [formdata]);
+
+  const uploadFileHandler = async (e) => {
+    const formdata = new FormData();
+    formdata.append("image", e.target.files[0]);
+
+    try {
+      const res = await uploadProductImage(formdata).unwrap();
+      toast.success("Item added suceessfully");
+      setImage(res.image);
+    } catch (error) {
+      toast.error("Item added suceessfully");
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const productData = new FormData();
-      productData.append("image", image);
-      productData.append("name", name);
-      productData.append("description", description);
-      productData.append("price", price);
-      productData.append("category", category);
-      productData.append("quantity", quantity);
-      productData.append("brand", brand);
-      productData.append("countInStock", stock);
+      const formdata = new FormData();
+      formdata.append("image", image);
+      formdata.append("name", name);
+      formdata.append("description", description);
+      formdata.append("price", price);
+      formdata.append("category", category);
+      formdata.append("quantity", quantity);
+      formdata.append("brand", brand);
+      formdata.append("countInStock", stock);
 
-      const { data, error } = await createProduct(productData);
+      const response = await updateProduct({ productId: params._id, formdata }).unwrap();
+    
+    toast.success("Product successfully updated");
+    navigate("/admin/allproductslist");
+  } catch (error) {
+    console.error("Error during product update:", error);
+    toast.error("Product update failed. Please check the console for more details.");
+  }
+};
 
-      console.log("Data ", data);
-      
-
-      if (error) {
-        console.error("Server error:", error);
-        toast.error(error.message || "Product creation failed. Try again.");
-      } else {
-        toast.success(`${data.name} is created`);
-        navigate("/");
-      }
-    } catch (error) {
-      console.error("Catch error:", error);
-      toast.error("Product creation failed. Try again.");
-    }
-  };
-
-  const uploadFileHandler = async (e) => {
-    const formData = new FormData();
-    formData.append("image", e.target.files[0]);
-
+  const handleDelete = async () => {
     try {
-      const res = await uploadProductImage(formData).unwrap();
-      toast.success(res.message);
-      setImage(res.image);
-      setImageUrl(res.image);
+      const answer = window.confirm(
+        "Are you sure you want to delete this product?"
+      );
+      if (!answer) return;
+
+      const { data } = await deleteProduct(params._id);
+      toast.success(`${data.name} is deleted`);
+      navigate("/admin/allproductslist");
     } catch (error) {
-      toast.error(error?.data?.messsage || error.error);
+      console.log(error);
+      toast.error("Deletion failed, try again");
     }
   };
 
   return (
     <div className="container xl:mx-[9rem] sm:mx-[0]">
       <div className="flex flex-col md:flex-row">
-        <AdminMenu/>
+        <AdminMenu />
         <div className="md:w-3/4 p-3">
           <div className="h-12">Create Product</div>
 
-          {imageUrl && (
+          {image && (
             <div className="text-center">
               <img
-                src={imageUrl}
+                src={image}
                 alt="product"
                 className="block mx-auto max-h-[200px]"
               />
@@ -169,6 +195,7 @@ const ProductList = () => {
               <div>
                 <label htmlFor="">Category</label> <br />
                 <select
+                  value={category}
                   placeholder="Choose Category"
                   className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white"
                   onChange={(e) => setCategory(e.target.value)}
@@ -182,12 +209,20 @@ const ProductList = () => {
               </div>
             </div>
 
-            <button
-              onClick={handleSubmit}
-              className="py-4 px-10 mt-5 rounded-lg text-lg font-bold bg-pink-600"
-            >
-              Submit
-            </button>
+            <div>
+              <button
+                onClick={handleSubmit}
+                className="py-4 px-10 mt-5 rounded-lg text-lg font-bold bg-green-600 mr-6"
+              >
+                Update{" "}
+              </button>
+              <button
+                onClick={handleDelete}
+                className="py-4 px-10 mt-5 rounded-lg text-lg font-bold bg-pink-600"
+              >
+                Delete{" "}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -195,4 +230,4 @@ const ProductList = () => {
   );
 };
 
-export default ProductList;
+export default ProductUpdate;

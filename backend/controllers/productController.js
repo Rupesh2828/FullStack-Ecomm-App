@@ -68,7 +68,16 @@ const updateProduct = asyncHandler(async (req, res) => {
       { ...req.fields },
       { new: true }
     );
-    await product.save();
+
+
+    console.log("Updated Product:", product);
+
+    //removed save call
+    // await product.save();
+
+    if (!product) {
+      return res.status(404).json({ error: "Product not found." });
+    }
 
     res.json(product);
   } catch (error) {
