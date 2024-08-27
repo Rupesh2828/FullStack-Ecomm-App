@@ -2,7 +2,7 @@ import React from "react";
 
 const Message = ({ variant, children }) => {
   const getVarientClass = () => {
-    switch (varient) {
+    switch (variant) {
       case "success":
         return "bg-green-100 text-green-800";
 
