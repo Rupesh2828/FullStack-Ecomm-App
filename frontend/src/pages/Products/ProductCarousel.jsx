@@ -29,7 +29,7 @@ const ProductCarousel = () => {
   return (
     <div className="mb-4 xl:block lg:block mg:block">
       {isLoading ? null : error ? (
-        <Message variant={danger}>
+        <Message variant='danger'>
           {error?.data?.message || error.message}
         </Message>
       ) : (
@@ -66,7 +66,7 @@ const ProductCarousel = () => {
                       {description.substring(0, 170)}...
                     </p>
                   </div>
-                </div>
+                
 
                 <div className="flex justify-between w-[20rem]">
                   <div className="one">
@@ -97,7 +97,7 @@ const ProductCarousel = () => {
                         {countInStock}
                     </h1>
                   </div>
-
+                  </div>
                 </div>
               </div>
             )

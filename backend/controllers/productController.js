@@ -193,7 +193,7 @@ const addProductReview = asyncHandler(async (req, res) => {
 
   } catch (error) {
     console.log(error); 
-    res.status(400).json({ error: "Server error" });
+    res.status(400).json(error.message);
   }
 });
 
