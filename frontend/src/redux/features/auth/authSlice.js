@@ -12,10 +12,15 @@ const authSlice = createSlice({
   initialState,
   reducers : {
     setCredentials : (state, action) => {
+      // Update the Redux state with the user information from the action's payload
       state.userInfo = action.payload;
+
+      // Store the user information in localStorage and JSON.stringify is used to convert the object into a string format, as localStorage only stores strings.
+      
       localStorage.setItem("userInfo", JSON.stringify(action.payload))
       const expirationTime = new Date().getTime() + 30 *24* 60*60*1000;
 
+      // Store the expiration time in localStorage
       localStorage.setItem('expirationTime', expirationTime);
 
     },

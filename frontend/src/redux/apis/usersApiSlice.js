@@ -1,6 +1,8 @@
 import { apiSlice } from "./apiSlice";
 import { USERS_URL } from "../constants.js";
 
+//get request gets the  builder.query for other its builder.mutation
+
 export const userApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation({
