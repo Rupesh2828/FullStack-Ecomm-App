@@ -84,3 +84,5 @@ export const {
 
 //here http:localhost:5000 the USERS_URL =/api/users then login so it goes like this
 // http://localhost:5000/api/users/login
+
+//The data will be kept in the cache for 5 seconds after the last component that was using it stops using it. If the data is needed again within those 5 seconds, it can be reused without making another network request. After 5 seconds, the cached data will be discarded, and a new request will be made if needed.

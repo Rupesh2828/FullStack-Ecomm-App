@@ -3,17 +3,22 @@ import { setupListeners } from "@reduxjs/toolkit/query";
 import { apiSlice } from "./apis/apiSlice";
 import authReducer from "./features/auth/authSlice";
 import favoritesReducer from "./features/favorites/favoriteSlice";
+import cartSliceReducer from "../redux/cart/cartSlice";
+import shopSliceReducer from "../redux/features/shop/shopSlice"
 import { getFavoritesFromLocalStorage } from "../Utility/localStorage";
 
 const initialFavorites = getFavoritesFromLocalStorage() || [];
 
 //reducerPath is a property of apiSlice, which is typically created using createApi from Redux Toolkit's @reduxjs/toolkit/query library
+
 const store = configureStore({
   reducer: {
     [apiSlice.reducerPath]: apiSlice.reducer,
     //by below we connected authSlice to store and favorites to store
     auth: authReducer,
     favorites: favoritesReducer,
+    cart: cartSliceReducer,
+    shop : shopSliceReducer
   },
 
   preloadedState: {
