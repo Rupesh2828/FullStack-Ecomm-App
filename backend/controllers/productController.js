@@ -69,7 +69,6 @@ const updateProduct = asyncHandler(async (req, res) => {
       { new: true }
     );
 
-
     console.log("Updated Product:", product);
 
     //removed save call
@@ -190,57 +189,47 @@ const addProductReview = asyncHandler(async (req, res) => {
       res.status(404);
       throw new Error("Product not found");
     }
-
   } catch (error) {
-    console.log(error); 
+    console.log(error);
     res.status(400).json(error.message);
   }
 });
 
-const fetchTopProducts = asyncHandler(async(req,res) => {
+const fetchTopProducts = asyncHandler(async (req, res) => {
   try {
-
-    const product = await Product.find({}).sort({rating: -1}).limit(4)
-    res.json(product)
-    
+    const product = await Product.find({}).sort({ rating: -1 }).limit(4);
+    res.json(product);
   } catch (error) {
-    console.log(error); 
+    console.log(error);
     res.status(400).json({ error: "Server error" });
-    
   }
-})
+});
 
-const fetchNewProducts = asyncHandler(async(req,res) => {
+const fetchNewProducts = asyncHandler(async (req, res) => {
   try {
-
-    const products = await Product.find({}).sort({_id: -1}).limit(5)
-    res.json(products)
-    
+    const products = await Product.find({}).sort({ _id: -1 }).limit(5);
+    res.json(products);
   } catch (error) {
-    console.log(error); 
+    console.log(error);
     res.status(400).json({ error: "Server error" });
-    
   }
-})
+});
 
-const filteredProducts = asyncHandler(async(req, res) => {
+const filteredProducts = asyncHandler(async (req, res) => {
   try {
+    const { checked, radio } = req.body;
 
-    const {checked, radio} = req.body;
-    
-    let args = {}
-    if(checked.length > 0) args.category = checked;
-    if(radio.length) args.price = {$gte : radio[0], $lte: radio[1]}
+    let args = {};
+    if (checked.length > 0) args.category = checked;
+    if (radio.length) args.price = { $gte: radio[0], $lte: radio[1] };
 
-    const products = await Product.find(args)
-    res.json(products)
-    
+    const products = await Product.find(args);
+    res.json(products);
   } catch (error) {
-     console.log(error);
-     res.status(500).json({error: "Server Error"})
-     
+    console.log(error);
+    res.status(500).json({ error: "Server Error" });
   }
-})
+});
 
 export {
   addProduct,
@@ -252,5 +241,5 @@ export {
   addProductReview,
   fetchTopProducts,
   fetchNewProducts,
-  filteredProducts
+  filteredProducts,
 };
