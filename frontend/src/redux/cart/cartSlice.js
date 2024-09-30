@@ -22,12 +22,13 @@ const cartSlice = createSlice({
         state.cartItems = [...state.cartItems, item];
       }
 
-      return updateCart(state, item);
+      //removed return statement not necessary because Redux Toolkit uses Immer.js under the hood to handle state immutability.
+      updateCart(state, item);
     },
 
     removeFromCart: (state, action) => {
       state.cartItems = state.cartItems.filter((x) => x._id !== action.payload);
-      return updateCart(state);
+      updateCart(state);
     },
 
     saveShippingAddress: (state, action) => {
@@ -45,7 +46,12 @@ const cartSlice = createSlice({
       localStorage.setItem("cart", JSON.stringify(state));
     },
 
-    resetCart: (state) => (state = initialState),
+    resetCart: (state) => {
+      state.cartItems = [];
+      state.shippingAddress = {};
+      state.paymentMethod = "PayPal";
+      localStorage.removeItem("cart"); // Ensure localStorage is also reset
+    },
   },
 });
 
@@ -58,4 +64,4 @@ export const {
   resetCart,
 } = cartSlice.actions;
 
-export default cartSlice.reducer
+export default cartSlice.reducer;

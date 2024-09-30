@@ -25,11 +25,16 @@ router
   .post(authenticate, authorizeAdmin, formidable(), addProduct);
 
 router.route("/allproducts").get(fetchAllProducts);
-router
-  .route("/:id/reviews")
-  .post(authenticate, checkId, addProductReview);
+
+
 router.route("/top").get(fetchTopProducts);
 router.route("/new").get(fetchNewProducts);
+
+router.route("/filtered-products").post(filteredProducts)  
+
+router
+.route("/:id/reviews")
+  .post(authenticate, checkId, addProductReview);
 
 router
   .route("/:id")
@@ -37,6 +42,5 @@ router
   .put(authenticate, authorizeAdmin, formidable(), updateProduct)
   .delete(authenticate, authorizeAdmin, formidable(), removeProduct);
 
-router.route("/filtered-products").post(filteredProducts)  
 
 export default router;
