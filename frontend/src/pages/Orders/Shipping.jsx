@@ -50,7 +50,7 @@ const Shipping = () => {
             <input
               type="text"
               className="w-full p-2 border rounded"
-              placeholder="Enter your email address"
+              placeholder="Enter your address"
               value={address}
               onChange={(e) => setAddress(e.target.value)}
               required

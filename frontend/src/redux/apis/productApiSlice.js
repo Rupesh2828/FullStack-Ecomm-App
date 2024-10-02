@@ -86,7 +86,7 @@ export const productApiSlice = apiSlice.injectEndpoints({
     getFilteredProducts : builder.mutation({
       query: ({checked, radio}) => ({
         url : `${PRODUCT_URL}/filtered-products`,
-        methd: "POST",
+        method: "POST",
         body: {checked, radio}
       }),
       providesTags: ["Product"],

@@ -32,21 +32,22 @@ const Shop = () => {
 
   useEffect(() => {
     // Check if either checked or radio is selected
-    if (checked.length || radio.length) {
+    if (checked?.length || radio?.length) {
+      getFilteredProducts({ checked: [], radio: [] });
+    } else {
       getFilteredProducts({ checked, radio });
     }
   }, [checked, radio, getFilteredProducts]);
 
   useEffect(() => {
-    if (!isLoading) {
-      // Filter products based on both checked categories and price filter
+    if (!isLoading && filteredProductsData?.data) {
+      console.log("Filtered Products Data: ", filteredProductsData?.data);
       const filteredProducts = filteredProductsData?.data?.filter((product) => {
         return (
           product.price.toString().includes(priceFilter) ||
           product.price === parseInt(priceFilter, 10)
         );
       });
-
       dispatch(setProducts(filteredProducts));
     }
   }, [filteredProductsData, dispatch, priceFilter, isLoading]);
@@ -80,6 +81,13 @@ const Shop = () => {
     setPriceFilter(e.target.value);
   };
 
+  const handleReset = () => {
+    dispatch(setChecked([])); // Reset checked categories
+    dispatch(setRadio([])); // Reset radio selection (brands)
+    setPriceFilter(""); // Reset price filter
+    dispatch(setProducts([]));
+  };
+
   return (
     <>
       <div className="container mx-auto">
@@ -97,11 +105,11 @@ const Shop = () => {
                       type="checkbox"
                       id={`checkbox-${c._id}`}
                       onChange={(e) => handleCheck(e.target.checked, c._id)}
-                      className="w-4 h-4 text-pink-600 bg-gray-100 border-gray-300 rounded focus:ring-pink-500 dark:focus:ring-pink-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                      className="w-4 h-4 text-pink-600 bg-gray-100 border-gray-300 rounded focus:ring-pink-500"
                     />
                     <label
                       htmlFor={`checkbox-${c._id}`}
-                      className="ml-2 text-sm font-medium text-white dark:text-gray-300"
+                      className="ml-2 text-sm font-medium text-white"
                     >
                       {c.name}
                     </label>
@@ -115,18 +123,21 @@ const Shop = () => {
             </h2>
 
             <div className="p-5">
-              {uniqueBrands?.map((brand) => (
-                <div key={brand} className="flex items-center mr-4 mb-5">
+              {uniqueBrands?.map((brand, index) => (
+                <div
+                  key={`${brand}-${index}`}
+                  className="flex items-center mr-4 mb-5"
+                >
                   <input
                     type="radio"
                     id={`brand-${brand}`}
                     name="brand"
                     onChange={() => handleBrandClick(brand)}
-                    className="w-4 h-4 text-pink-400 bg-gray-100 border-gray-300 focus:ring-pink-500 dark:focus:ring-pink-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                    className="w-4 h-4 text-pink-400 bg-gray-100 border-gray-300 focus:ring-pink-500"
                   />
                   <label
                     htmlFor={`brand-${brand}`}
-                    className="ml-2 text-sm font-medium text-white dark:text-gray-300"
+                    className="ml-2 text-sm font-medium text-white"
                   >
                     {brand}
                   </label>
@@ -149,10 +160,7 @@ const Shop = () => {
             </div>
 
             <div className="p-5 pt-0">
-              <button
-                className="w-full border my-4"
-                onClick={() => window.location.reload()}
-              >
+              <button className="w-full border my-4" onClick={handleReset}>
                 Reset
               </button>
             </div>
@@ -161,14 +169,16 @@ const Shop = () => {
           <div className="p-3">
             <h2 className="h4 text-center mb-2">{products?.length} Products</h2>
             <div className="flex flex-wrap">
-              {products?.length === 0 ? (
+              {isLoading ? (
                 <Loader />
-              ) : (
+              ) : products?.length ? (
                 products?.map((p) => (
                   <div className="p-3" key={p._id}>
                     <ProductCard p={p} />
                   </div>
                 ))
+              ) : (
+                <p>No products available.</p>
               )}
             </div>
           </div>

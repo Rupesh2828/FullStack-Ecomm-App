@@ -8,7 +8,7 @@ const Cart = () => {
   const dispatch = useDispatch();
 
   const cart = useSelector((state) => state.cart);
-  const { cartItems } = cart;
+  const cartItems = cart.cartItems || []; // Fallback to empty array
 
   const addToCartHandler = (product, qty) => {
     dispatch(addToCart({ ...product, qty }));
@@ -24,7 +24,7 @@ const Cart = () => {
 
   return (
     <>
-      <div className="container flex justify-around items-start flex flex-wrap mx-auto mt-8">
+      <div className="container flex justify-around items-start flex-wrap mx-auto mt-8">
         {cartItems.length === 0 ? (
           <div>
             Your cart is empty <Link to="/shop">Go To Shop</Link>
@@ -74,11 +74,13 @@ const Cart = () => {
                     </select>
                   </div>
 
-                  <div
-                    className="text-red-500 mr-[5rem]"
-                    onClick={() => removeFromCartHandler(item._id)}
-                  >
-                    <FaTrash className="ml-[.5rem]" />
+                  <div>
+                    <button
+                      className="text-red-500 mr-[5rem]"
+                      onClick={() => removeFromCartHandler(item._id)}
+                    >
+                      <FaTrash className="ml-[1rem] mt-[.5rem]" />
+                    </button>
                   </div>
                 </div>
               ))}
@@ -86,8 +88,7 @@ const Cart = () => {
               <div className="mt-8 w-[40rem]">
                 <div className="p-4 rounded-lg">
                   <h2 className="text-xl font-semibold mb-2">
-                    Items ({cartItems.reduce((acc, item) => acc + item.qty, 0)}
-                    )
+                    Items ({cartItems.reduce((acc, item) => acc + item.qty, 0)})
                   </h2>
 
                   <div className="text-2xl font-bold">
@@ -104,7 +105,6 @@ const Cart = () => {
                   >
                     Proceed To Checkout
                   </button>
-
                 </div>
               </div>
             </div>
